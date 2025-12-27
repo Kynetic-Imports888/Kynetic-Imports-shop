@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>AOC K68 限量搶購</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
+        .product-card { background: white; width: 360px; margin: 20px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
+        
+        /* 商店 LOGO 樣式 */
+        .logo-container { width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; background: #eee; }
+        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .stock { font-size: 26px; color: #ff4d4d; font-weight: bold; margin: 15px 0; }
+        .input-group { text-align: left; margin-top: 20px; }
+        .input-group label { display:block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        .input-group input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .input-group input:disabled { background-color: #f9f9f9; cursor: not-allowed; }
+        
+        /* 搶購按鈕 */
+        #buy-btn { background: #007bff; color: white; border: none; padding: 15px; cursor: pointer; border-radius: 8px; font-size: 18px; width: 100%; font-weight: bold; transition: 0.3s; }
+        #buy-btn:disabled { background: #ccc !important; cursor: not-allowed; }
+
+        /* 社群按鈕 */
+        .social-links { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee; }
+        .link-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            margin: 0 15px; width: 70px; height: 70px; border-radius: 50%;
+            color: white !important; text-decoration: none; font-size: 32px;
+            transition: all 0.3s ease; border: 4px solid #fff; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .discord { background-color: #5865F2 !important; border-color: #5865F2 !important; }
+        .instagram { 
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important;
+            border-color: #d6249f !important;
+        }
+
+        /* --- 自訂大字彈窗樣式 --- */
+        #success-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; padding: 40px; border-radius: 20px; width: 320px; text-align: center;
+        }
+        .big-alert-text {
+            font-size: 24px;
+            color: #ff4d4d;
+            font-weight: bold;
+            margin: 20px 0;
+            background: #fff3f3;
+            padding: 15px 5px;
+            border: 2px solid #ff4d4d;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="product-card">
+        <div class="logo-container">
+            <img src="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?ex=695186b1&is=69503531&hm=8826e06af1254e458f62524b3e10bdaf2f5f11bdc66c9f930e74d04452663357&=&format=webp&quality=lossless" alt="Shop Logo">
+        </div>
+
+        <h2 style="margin: 0;">AOC K68 三模磁軸</h2>
+        <p style="color: #666;">限量搶購網頁</p>
+        
+        <div class="stock">剩餘名額：<span id="stock-count">載入中...</span></div>
+        
+        <div class="input-group">
+            <label>真實姓名</label>
+            <input type="text" id="user-name" placeholder="請填寫姓名(需跟賣貨便一樣)" disabled>
+            <label>Discord 使用者名稱</label>
+            <input type="text" id="user-discord" placeholder="例如: aa544655" disabled>
+        </div>
+
+        <button id="buy-btn" onclick="order()" disabled>載入中...</button>
+
+        <div class="social-links">
+            <p style="font-size: 14px; color: #888; margin-bottom: 15px;">聯絡小編</p>
+            <a href="https://discord.gg/PSjb2gTZww" target="_blank" class="link-icon discord">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+            <a href="https://www.instagram.com/kynetic_lmports1018/" target="_blank" class="link-icon instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+        </div>
+    </div>
+
+    <div id="success-modal">
+        <div class="modal-content">
+            <h2 style="color: #28a745; margin-top: 0;">🎉 預購成功！</h2>
+            <p style="text-align: left; font-size: 18px; color: #444;">
+                姓名：<span id="display-name"></span><br>
+                Discord：<span id="display-discord"></span>
+            </p>
+            
+            <div class="big-alert-text">
+                請把我截圖起來傳至Discord！
+            </div>
+
+            <button onclick="goToDiscord()" style="background: #5865F2; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                前往 Discord 頻道
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, runTransaction, set, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUPTNtwtQxvepJpdeL349QrJSg8uWDBlk",
+            authDomain: "test-89795.firebaseapp.com",
+            databaseURL: "https://test-89795-default-rtdb.asia-southeast1.firebasedatabase.app/", 
+            projectId: "test-89795",
+            storageBucket: "test-89795.firebasestorage.app",
+            messagingSenderId: "377974208078",
+            appId: "1:377974208078:web:d283338995abe17017751f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const stockRef = ref(db, 'stock');
+
+        const stockDisplay = document.getElementById('stock-count');
+        const buyBtn = document.getElementById('buy-btn');
+        const nameInput = document.getElementById('user-name');
+        const discordInput = document.getElementById('user-discord');
+
+        // --- 設定開搶時間 (年, 月(0-11), 日, 時, 分, 秒) ---
+        // 11 代表 12 月
+        const startTime = new Date(2025, 11, 28, 4, 59, 0).getTime();
+
+        function checkInputs() {
+            const now = new Date().getTime();
+            const hasOrdered = localStorage.getItem('hasOrderedK68');
+            const currentStock = parseInt(stockDisplay.innerText);
+            
+            // 1. 檢查是否到時間了
+            if (now < startTime) {
+                nameInput.disabled = true;
+                discordInput.disabled = true;
+                return; // 時間未到，直接結束判斷
+            } else {
+                nameInput.disabled = false;
+                discordInput.disabled = false;
+            }
+
+            // 2. 檢查基本狀態
+            if (hasOrdered === 'true') {
+                buyBtn.disabled = true; buyBtn.innerText = "您已完成預購"; return;
+            }
+            if (currentStock <= 0) {
+                buyBtn.disabled = true; buyBtn.innerText = "已售罄"; return;
+            }
+
+            // 3. 檢查欄位與中文偵測
+            const chineseNamePattern = /^[\u4E00-\u9FA5]+$/;
+            const isChineseName = chineseNamePattern.test(nameInput.value.trim());
+
+            if (isChineseName && discordInput.value.trim() !== "") {
+                buyBtn.disabled = false; 
+                buyBtn.innerText = "立即搶購";
+                nameInput.style.borderColor = "#ddd";
+            } else {
+                buyBtn.disabled = true; 
+                buyBtn.innerText = isChineseName ? "請填寫完整資訊" : "姓名請填寫正確";
+                if (nameInput.value.trim() !== "" && !isChineseName) {
+                    nameInput.style.borderColor = "red";
+                } else {
+                    nameInput.style.borderColor = "#ddd";
+                }
+            }
+        }
+
+        // 定時器：每秒更新一次倒數計時
+        setInterval(() => {
+            const now = new Date().getTime();
+            if (now < startTime) {
+                const diff = startTime - now;
+                const h = Math.floor(diff / (1000 * 60 * 60));
+                const m = Math.floor((diff / (1000 * 60)) % 60);
+                const s = Math.floor((diff / 1000) % 60);
+                buyBtn.innerText = `預購倒數 ${h}時${m}分${s}秒`;
+                buyBtn.disabled = true;
+            } else {
+                checkInputs(); // 時間到，開始檢查輸入內容
+            }
+        }, 1000);
+
+        nameInput.addEventListener('input', checkInputs);
+        discordInput.addEventListener('input', checkInputs);
+
+        onValue(stockRef, (snapshot) => {
+            const currentStock = snapshot.val();
+            stockDisplay.innerText = (currentStock !== null) ? currentStock : 0;
+            checkInputs();
+        });
+
+        window.order = function() {
+            const name = nameInput.value.trim();
+            const discord = discordInput.value.trim();
+            runTransaction(stockRef, (currentData) => {
+                if (currentData > 0) return currentData - 1;
+                return;
+            }).then((result) => {
+                if (result.committed) {
+                    localStorage.setItem('hasOrderedK68', 'true');
+                    const orderRef = push(ref(db, 'orders'));
+                    set(orderRef, { name, discord, time: new Date().toLocaleString() });
+
+                    let maskedName = name[0] + "*".repeat(Math.max(1, name.length - 1));
+                    let maskedDiscord = discord.substring(0, 2) + "****";
+
+                    document.getElementById('display-name').innerText = maskedName;
+                    document.getElementById('display-discord').innerText = maskedDiscord;
+                    document.getElementById('success-modal').style.display = 'flex';
+                }
+            });
+        };
+
+        window.goToDiscord = function() {
+            window.location.href = "https://discord.com/channels/1428075403125325969/1452541781358022807";
+        };
+    </script>
+</body>
+</html>
