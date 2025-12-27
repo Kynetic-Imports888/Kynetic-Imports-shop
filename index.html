@@ -5,12 +5,14 @@
     <title>AOC K68 限量搶購</title>
     
     <meta property="og:title" content="AOC K68 三模磁軸限量搶購">
-    <meta property="og:description" content="Kynetic Imports 限量預購網頁。請填寫真實姓名與 Discord 帳號參與搶購，名額有限售完為止！">
+    <meta property="og:description" content="Kynetic Imports 限量預購網頁。請填寫真實姓名與 Discord 參與搶購，名額有限售完為止！">
     <meta property="og:image" content="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png">
     <meta property="og:url" content="https://az40824082-hub.github.io/Kynetic-Imports-shop/">
     <meta property="og:type" content="website">
 
-    <link rel="icon" href="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png" type="image/x-icon">
+    <link rel="icon" href="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?v=2">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
@@ -22,49 +24,29 @@
         .logo-container img { width: 100%; height: 100%; object-fit: cover; }
 
         .stock { font-size: 26px; color: #ff4d4d; font-weight: bold; margin: 15px 0; }
+        
+        /* 跑馬燈樣式 */
+        .marquee-container { background: #fff3f3; color: #ff4d4d; padding: 8px 0; overflow: hidden; position: relative; margin: 10px 0; border: 1px solid #ffcccc; border-radius: 8px; }
+        .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 12s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .marquee-content span { margin-right: 50px; font-weight: bold; }
+
         .input-group { text-align: left; margin-top: 20px; }
         .input-group label { display:block; margin-bottom: 5px; font-weight: bold; color: #555; }
         .input-group input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         .input-group input:disabled { background-color: #f9f9f9; cursor: not-allowed; }
         
-        /* 搶購按鈕 */
         #buy-btn { background: #007bff; color: white; border: none; padding: 15px; cursor: pointer; border-radius: 8px; font-size: 18px; width: 100%; font-weight: bold; transition: 0.3s; }
         #buy-btn:disabled { background: #ccc !important; cursor: not-allowed; }
 
-        /* 社群按鈕 */
         .social-links { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee; }
-        .link-icon {
-            display: inline-flex; align-items: center; justify-content: center;
-            margin: 0 15px; width: 70px; height: 70px; border-radius: 50%;
-            color: white !important; text-decoration: none; font-size: 32px;
-            transition: all 0.3s ease; border: 4px solid #fff; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+        .link-icon { display: inline-flex; align-items: center; justify-content: center; margin: 0 15px; width: 70px; height: 70px; border-radius: 50%; color: white !important; text-decoration: none; font-size: 32px; transition: all 0.3s ease; border: 4px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .discord { background-color: #5865F2 !important; border-color: #5865F2 !important; }
-        .instagram { 
-            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important;
-            border-color: #d6249f !important;
-        }
+        .instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important; border-color: #d6249f !important; }
 
-        /* --- 自訂大字彈窗樣式 --- */
-        #success-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; padding: 40px; border-radius: 20px; width: 320px; text-align: center;
-        }
-        .big-alert-text {
-            font-size: 24px;
-            color: #ff4d4d;
-            font-weight: bold;
-            margin: 20px 0;
-            background: #fff3f3;
-            padding: 15px 5px;
-            border: 2px solid #ff4d4d;
-            border-radius: 10px;
-            white-space: nowrap;
-        }
+        #success-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; width: 320px; text-align: center; }
+        .big-alert-text { font-size: 24px; color: #ff4d4d; font-weight: bold; margin: 20px 0; background: #fff3f3; padding: 15px 5px; border: 2px solid #ff4d4d; border-radius: 10px; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -78,10 +60,18 @@
         <p style="color: #666;">限量搶購網頁</p>
         
         <div class="stock">剩餘名額：<span id="stock-count">載入中...</span></div>
+
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <span>🔥 目前剩餘名額：<span id="marquee-stock">載入中...</span></span>
+                <span>📢 搶購名額有限，請填寫中文真實姓名！</span>
+                <span>⚠️ 成功後請截圖畫面傳至 Discord 頻道。</span>
+            </div>
+        </div>
         
         <div class="input-group">
             <label>真實姓名</label>
-            <input type="text" id="user-name" placeholder="請填寫姓名(需跟賣貨便一樣)" disabled>
+            <input type="text" id="user-name" placeholder="請填寫中文姓名" disabled>
             <label>Discord 使用者名稱</label>
             <input type="text" id="user-discord" placeholder="例如: aa544655" disabled>
         </div>
@@ -136,30 +126,29 @@
         const stockRef = ref(db, 'stock');
 
         const stockDisplay = document.getElementById('stock-count');
+        const marqueeStock = document.getElementById('marquee-stock');
         const buyBtn = document.getElementById('buy-btn');
         const nameInput = document.getElementById('user-name');
         const discordInput = document.getElementById('user-discord');
 
-        // --- 設定開搶時間 (年, 月(0-11), 日, 時, 分, 秒) ---
-        // 11 代表 12 月
-        const startTime = new Date(2025, 11, 28, 4, 59, 0).getTime();
+        // --- 設定開搶時間 (2025年, 12月28日, 04點51分) ---
+        // 注意：月份 11 代表 12 月
+        const startTime = new Date(2025, 11, 28, 4, 51, 0).getTime();
 
         function checkInputs() {
             const now = new Date().getTime();
             const hasOrdered = localStorage.getItem('hasOrderedK69');
-            const currentStock = parseInt(stockDisplay.innerText);
+            const currentStock = parseInt(stockDisplay.innerText) || 0;
             
-            // 1. 檢查是否到時間了
             if (now < startTime) {
                 nameInput.disabled = true;
                 discordInput.disabled = true;
-                return; // 時間未到，直接結束判斷
+                return;
             } else {
                 nameInput.disabled = false;
                 discordInput.disabled = false;
             }
 
-            // 2. 檢查基本狀態
             if (hasOrdered === 'true') {
                 buyBtn.disabled = true; buyBtn.innerText = "您已完成預購"; return;
             }
@@ -167,7 +156,6 @@
                 buyBtn.disabled = true; buyBtn.innerText = "已售罄"; return;
             }
 
-            // 3. 檢查欄位與中文偵測
             const chineseNamePattern = /^[\u4E00-\u9FA5]+$/;
             const isChineseName = chineseNamePattern.test(nameInput.value.trim());
 
@@ -177,7 +165,7 @@
                 nameInput.style.borderColor = "#ddd";
             } else {
                 buyBtn.disabled = true; 
-                buyBtn.innerText = isChineseName ? "請填寫完整資訊" : "姓名請填寫正確";
+                buyBtn.innerText = isChineseName ? "請填寫完整資訊" : "姓名請填寫中文";
                 if (nameInput.value.trim() !== "" && !isChineseName) {
                     nameInput.style.borderColor = "red";
                 } else {
@@ -186,7 +174,6 @@
             }
         }
 
-        // 定時器：每秒更新一次倒數計時
         setInterval(() => {
             const now = new Date().getTime();
             if (now < startTime) {
@@ -197,7 +184,7 @@
                 buyBtn.innerText = `預購倒數 ${h}時${m}分${s}秒`;
                 buyBtn.disabled = true;
             } else {
-                checkInputs(); // 時間到，開始檢查輸入內容
+                checkInputs();
             }
         }, 1000);
 
@@ -206,7 +193,9 @@
 
         onValue(stockRef, (snapshot) => {
             const currentStock = snapshot.val();
-            stockDisplay.innerText = (currentStock !== null) ? currentStock : 0;
+            const finalStock = (currentStock !== null) ? currentStock : 0;
+            stockDisplay.innerText = finalStock;
+            if (marqueeStock) marqueeStock.innerText = finalStock; // 同步跑馬燈
             checkInputs();
         });
 
