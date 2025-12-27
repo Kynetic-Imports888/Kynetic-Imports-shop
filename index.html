@@ -2,9 +2,9 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>AOC K68 限量搶購</title>
+    <title>商品搶購預覽</title>
     
-    <meta property="og:title" content="AOC K68 三模磁軸限量搶購">
+    <meta property="og:title" content="商品搶購預覽">
     <meta property="og:description" content="Kynetic Imports 限量預購網頁。請填寫真實姓名與 Discord 參與搶購，名額有限售完為止！">
     <meta property="og:image" content="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png">
     <meta property="og:url" content="https://az40824082-hub.github.io/Kynetic-Imports-shop/">
@@ -56,7 +56,7 @@
             <img src="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?ex=695186b1&is=69503531&hm=8826e06af1254e458f62524b3e10bdaf2f5f11bdc66c9f930e74d04452663357&=&format=webp&quality=lossless" alt="Shop Logo">
         </div>
 
-        <h2 style="margin: 0;">AOC K68 三模磁軸</h2>
+        <h2 style="margin: 0;">商品搶購預覽</h2>
         <p style="color: #666;">限量搶購網頁</p>
         
         <div class="stock">剩餘名額：<span id="stock-count">載入中...</span></div>
@@ -135,43 +135,20 @@
         // 注意：月份 11 代表 12 月
         const startTime = new Date(2025, 11, 28, 4, 51, 0).getTime();
 
-        function checkInputs() {
-            const now = new Date().getTime();
-            const hasOrdered = localStorage.getItem('hasOrderedK69');
-            const currentStock = parseInt(stockDisplay.innerText) || 0;
+        //到時候要開放改這邊 
+
+        function checkInputs() {             
+            // 強制鎖定所有欄位
+            nameInput.disabled = true;
+            discordInput.disabled = true;
             
-            if (now < startTime) {
-                nameInput.disabled = true;
-                discordInput.disabled = true;
-                return;
-            } else {
-                nameInput.disabled = false;
-                discordInput.disabled = false;
-            }
-
-            if (hasOrdered === 'true') {
-                buyBtn.disabled = true; buyBtn.innerText = "您已完成預購"; return;
-            }
-            if (currentStock <= 0) {
-                buyBtn.disabled = true; buyBtn.innerText = "已售罄"; return;
-            }
-
-            const chineseNamePattern = /^[\u4E00-\u9FA5]+$/;
-            const isChineseName = chineseNamePattern.test(nameInput.value.trim());
-
-            if (isChineseName && discordInput.value.trim() !== "") {
-                buyBtn.disabled = false; 
-                buyBtn.innerText = "立即搶購";
-                nameInput.style.borderColor = "#ddd";
-            } else {
-                buyBtn.disabled = true; 
-                buyBtn.innerText = isChineseName ? "請填寫完整資訊" : "姓名請填寫中文";
-                if (nameInput.value.trim() !== "" && !isChineseName) {
-                    nameInput.style.borderColor = "red";
-                } else {
-                    nameInput.style.borderColor = "#ddd";
-                }
-            }
+            // 強制設定按鈕狀態
+            buyBtn.disabled = true;
+            buyBtn.innerText = "預覽模式 (尚未開放)";
+            
+            // 讓輸入框變灰色
+            nameInput.style.backgroundColor = "#eee";
+            discordInput.style.backgroundColor = "#eee";
         }
 
         setInterval(() => {
