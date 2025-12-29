@@ -2,59 +2,62 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Kynetic Imports - 官方物流查詢與搶購</title>
-
-    <meta property="og:title" content="Kynetic Imports 官方物流與搶購">
-    <meta property="og:description" content="提供即時集運進度查詢與官方搶購。專業進口，品質保證。">
-    <meta property="og:image" content="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?ex=695380f1&is=69522f71&hm=e21544bd55e4bf10e3b345f752095ea6305e7344f6efce6720c919b892059ab0&=&format=webp&quality=lossless">
-    <link rel="icon" href="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?ex=695380f1&is=69522f71&hm=e21544bd55e4bf10e3b345f752095ea6305e7344f6efce6720c919b892059ab0&=&format=webp&quality=lossless" type="image/x-icon">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kynetic Imports - 官方物流與搶購</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        /* === 全域基礎樣式 === */
+        :root {
+            --gold: #FFD700;
+            --dark-gold: #FFA500;
+            --disabled-gray: #333333;
+            --bg-dark: rgba(15, 15, 10, 0.95);
+        }
+
         body { 
             font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; 
-            text-align: center; 
-            background: radial-gradient(circle at center, #1a1a05 0%, #000000 100%); 
-            color: #fff;
-            padding: 0; margin: 0; min-height: 100vh;
+            background: radial-gradient(circle at center, #1a1a05 0%, #000 100%); 
+            color: #fff; margin: 0; padding: 0; min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* === 一排式膠囊導覽列 === */
-        .nav-container { padding: 20px 0; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+/* 讓名額數字變紅色且有發光效果 */
+.marquee-stock-highlight {
+    color: #ff4d4d; /* 紅色 */
+    font-weight: 900;
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8), 0 0 20px rgba(255, 77, 77, 0.5);
+    animation: pulseHighlight 1.5s infinite; /* 加入閃爍動畫 */
+    padding: 0 5px;
+}
+
+@keyframes pulseHighlight {
+    0% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 77, 0.8); }
+    50% { opacity: 0.7; text-shadow: 0 0 20px rgba(255, 77, 77, 1); }
+    100% { opacity: 1; text-shadow: 0 0 10px rgba(255, 77, 77, 0.8); }
+}
+
+        /* === ⚡ 導航欄動態 (滑塊感) ⚡ === */
+        .nav-container { padding: 25px 0; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(15px); text-align: center;}
         .nav-bar { 
-            background: rgba(0, 0, 0, 0.8); 
-            padding: 8px; 
-            display: inline-flex; 
-            gap: 5px; 
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 50px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.8); padding: 5px; display: inline-flex; 
+            border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 50px; 
+            position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
         .nav-item { 
-            color: #FFD700; text-decoration: none !important; font-weight: bold; font-size: 14px; 
-            padding: 8px 25px; border-radius: 40px; cursor: pointer; user-select: none;
+            color: var(--gold); font-weight: bold; font-size: 14px; padding: 10px 28px; 
+            border-radius: 40px; cursor: pointer; position: relative; z-index: 2;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .nav-item:hover { color: #fff; background: rgba(255, 215, 0, 0.1); }
-        .nav-item.active { 
-            background: #FFD700; color: #000; 
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-        }
+        .nav-item.active { color: #000; background: var(--gold); box-shadow: 0 0 15px var(--gold); transform: scale(1.05); }
+        .nav-item:active { transform: scale(0.92); }
 
-        /* === 產品卡片與 3D 效果 === */
+        /* === 主卡片 === */
         .product-card { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(8px);
-            width: 380px; margin: 30px auto; padding: 40px; 
-            border-radius: 25px; border: 1px solid rgba(255, 215, 0, 0.2);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-            animation: cardEnter 0.8s ease-out;
-            transition: transform 0.5s ease;
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px);
+            width: 90%; max-width: 420px; margin: 30px auto; padding: 35px 25px; 
+            border-radius: 30px; border: 1px solid rgba(255, 215, 0, 0.1);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8); text-align: center;
         }
-        .product-card:hover { transform: perspective(1000px) rotateX(2deg) rotateY(-2deg); }
-        @keyframes cardEnter { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .logo-container { 
             width: 100px; 
@@ -70,57 +73,56 @@
         .logo-container:hover { transform: rotate(360deg) scale(1.1); }
         .logo-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* === 分頁切換動畫 === */
-        .page { display: none; animation: fadeIn 0.5s ease; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        /* === ⚡ 頁面切換動畫 ⚡ === */
+        .page { display: none; }
+        .page.active { 
+            display: block; 
+            animation: pageSlideIn 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); 
+        }
+        @keyframes pageSlideIn {
+            from { opacity: 0; transform: translateX(20px); filter: blur(5px); }
+            to { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
 
         /* === 跑馬燈 === */
-        .marquee-container { 
-            background: rgba(255, 215, 0, 0.05); color: #FFD700; 
-            padding: 10px 0; overflow: hidden; margin: 20px 0; 
-            border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 12px; font-size: 13px;
-        }
-        .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .marquee-container { background: rgba(255, 215, 0, 0.08); color: var(--gold); padding: 12px 0; overflow: hidden; margin: 20px 0; border-radius: 12px; font-size: 13px; white-space: nowrap; border: 1px solid rgba(255, 215, 0, 0.1); }
+        .marquee-content { display: inline-block; padding-left: 100%; animation: marquee-move 18s linear infinite; }
+        @keyframes marquee-move { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* === 搶購按鈕與流光 === */
+        /* === 📦 貨物查詢：深色框框 (圖片還原) === */
+        .status-card {
+            background: var(--bg-dark); border-radius: 20px; padding: 30px 20px; 
+            margin-top: 15px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: left;
+        }
+        .timeline { position: relative; padding-left: 50px; }
+        .timeline::before { content: ''; position: absolute; left: 21px; top: 20px; bottom: 20px; width: 2px; background: #332d00; }
+        .timeline-item { position: relative; margin-bottom: 35px; }
+        .t-icon {
+            position: absolute; left: -50px; top: 0; width: 44px; height: 44px;
+            background: #1a1a00; border: 1px solid #333; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 18px; color: #666; z-index: 2;
+        }
+        .timeline-item.current .t-icon { background: #ffcc00; color: #000; box-shadow: 0 0 20px rgba(255, 204, 0, 0.5); border: none; }
+        .t-content h4 { margin: 0; font-size: 17px; color: #888; }
+        .timeline-item.current .t-content h4 { color: #ffcc00; }
+        .t-time { display: block; font-size: 12px; color: #555; margin: 4px 0; }
+        .t-desc { font-size: 13px; color: #999; line-height: 1.5; }
+
+        /* === 輸入框與按鈕 === */
+        .input-group input { width: 100%; padding: 14px; margin-bottom: 12px; background: rgba(255,255,255,0.07); border: 1px solid #333; border-radius: 10px; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+        .input-error { border-color: #ff4d4d !important; background: rgba(255,0,0,0.05) !important; }
+
         #buy-btn { 
-            background: linear-gradient(45deg, #FFD700, #FFA500); 
-            color: #000; border: none; padding: 18px; width: 100%; 
-            border-radius: 12px; font-size: 18px; font-weight: bold; 
-            cursor: pointer; position: relative; overflow: hidden;
+            background: linear-gradient(45deg, var(--gold), var(--dark-gold)); 
+            color: #000; border: none; padding: 16px; width: 100%; border-radius: 12px; 
+            font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
         }
-        #buy-btn::after {
-            content: ""; position: absolute; top: -50%; left: -60%; width: 20%; height: 200%;
-            background: rgba(255, 255, 255, 0.4); transform: rotate(30deg); animation: shiny 3s infinite;
-        }
-        @keyframes shiny { 0% { left: -60%; } 20% { left: 120%; } 100% { left: 120%; } }
-        #buy-btn:disabled { background: #444 !important; color: #888; cursor: not-allowed; }
-        #buy-btn:disabled::after { display: none; }
+        #buy-btn:disabled { background: #444 !important; color: #888 !important; cursor: not-allowed; transform: none !important; box-shadow: none; }
+        #buy-btn:active:not(:disabled) { transform: scale(0.95); }
 
-        /* === 物流進度條樣式 === */
-        .progress-list { background: rgba(0, 0, 0, 0.4); border-radius: 20px; padding: 20px 15px; text-align: left; }
-        .progress-step { display: flex; margin-bottom: 25px; position: relative; }
-        .progress-step:not(:last-child)::after {
-            content: ""; position: absolute; left: 17px; top: 35px; width: 2px; height: 25px; background: rgba(255, 215, 0, 0.1);
-        }
-        .icon-box {
-            width: 36px; height: 36px; background: rgba(255, 215, 0, 0.1); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-        }
-        .icon-box i { color: #FFD700; font-size: 16px; display: block !important; }
-        
-        /* 正在進行中的步驟發光 */
-        .active-step .icon-box { background: #FFD700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); border: none; }
-        .active-step .icon-box i { color: #000; }
-        
-        .step-text strong { display: block; font-size: 15px; color: #FFD700; margin-bottom: 2px; }
-        .step-time { display: block; font-size: 11px; color: #666; margin-bottom: 5px; }
-        .step-text p { margin: 0; font-size: 12px; color: #aaa; line-height: 1.4; }
-
-        /* === 社群連結 === */
+        /* === 社交連結 === */
         .social-links { margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
         .link-icon { 
             width: 50px; height: 50px; border-radius: 50%; color: #fff !important; 
@@ -130,12 +132,6 @@
         .link-icon:hover { transform: translateY(-8px) rotate(10deg); border-color: #FFD700; box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2); }
         .discord { background: #5865F2; }
         .instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
-
-        /* 輸入框樣式 */
-        .input-group input { 
-            width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.05); 
-            border: 1px solid #333; border-radius: 10px; color: #fff; box-sizing: border-box;
-        }
     </style>
 </head>
 <body>
@@ -153,64 +149,65 @@
         </div>
 
         <div id="home-page" class="page active">
-            <h2 style="margin:0; color: #FFD700; letter-spacing:1px;">AOC K68 PRO</h2>
-            <div style="font-size:24px; color:#FFD700; font-weight:bold; margin:10px 0;">
+            <h2 style="margin:0; color: var(--gold); font-size: 22px;">測試商品</h2>
+            <div style="font-size:24px; color:var(--gold); font-weight:bold; margin:10px 0;">
                 <span id="stock-count">--</span> <small style="font-size:12px; color:#666;">名額</small>
             </div>
-            
             <div class="marquee-container">
                 <div class="marquee-content">
-                    <span>⚡ 剩餘名額：<span id="marquee-stock">--</span> ⚡ 搶購後請截圖傳至 Discord ⚡ 姓名請填寫中文真實姓名 ⚡</span>
+                    🔥 目前剩餘名額：<span id="marquee-stock" class="marquee-stock-highlight">--</span> 位 🔥 搶購後請截圖傳至 Discord 驗證 🔥 姓名請填寫中文真實姓名 🔥
                 </div>
             </div>
-
             <div class="input-group">
-                <input type="text" id="user-name" placeholder="預覽模式暫不開放" disabled>
-                <input type="text" id="user-discord" placeholder="預覽模式暫不開放" disabled>
-            </div>
-            <button id="buy-btn" disabled>預覽模式 (尚未開放)</button>
+    <input type="text" id="user-name" placeholder="預覽模式：暫不開放填寫" disabled>
+    <input type="text" id="user-discord" placeholder="預覽模式：暫不開放填寫" disabled>
+</div>
+            <button id="buy-btn" onclick="handleBuy()" disabled>請輸入完整資訊</button>
         </div>
 
         <div id="status-page" class="page">
-            <h2 style="margin-bottom:10px; color: #FFD700;">最新一批貨物狀態</h2>
-            <p style="font-size: 12px; color: #666; margin-bottom: 20px;">資料來源：集運物流中心</p>
-            
-            <div class="progress-list">
-                <div class="progress-step active-step">
-                    <div class="icon-box"><i class="fas fa-plane-departure"></i></div>
-                    <div class="step-text">
-                        <strong>包裹已從倉庫出貨</strong>
-                        <span class="step-time">2025-12-29 19:04:01</span>
-                        <p>包裹已離開集運倉，請耐心等候航次開航。</p>
+            <div style="color: #666; font-size: 12px; margin-bottom: 10px;">資料來源：集運物流中心</div>
+            <div class="status-card">
+                <div class="timeline">
+                    <div class="timeline-item current">
+                        <div class="t-icon"><i class="fas fa-plane"></i></div>
+                        <div class="t-content">
+                            <h4>包裹已從倉庫出貨</h4>
+                            <span class="t-time">2025-12-29 19:04:01</span>
+                            <p class="t-desc">包裹已離開集運倉，請耐心等候航次開航。</p>
+                        </div>
                     </div>
-                </div>
-                <div class="progress-step">
-                    <div class="icon-box"><i class="fas fa-box"></i></div>
-                    <div class="step-text">
-                        <strong>倉庫撿貨打包完畢</strong>
-                        <span class="step-time">2025-12-27 14:43:38</span>
-                        <p>商品已裝箱完成，等待移交物流商。</p>
+                    <div class="timeline-item">
+                        <div class="t-icon"><i class="fas fa-box"></i></div>
+                        <div class="t-content">
+                            <h4>倉庫撿貨打包完畢</h4>
+                            <span class="t-time">2025-12-27 14:43:38</span>
+                            <p class="t-desc">商品已裝箱完成，等待移交物流商。</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div id="success-page" class="page">
+            <h2 style="color: #4CAF50;"><i class="fas fa-check-circle"></i> 預購完成！</h2>
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; text-align: left; margin: 20px 0; border: 1px solid rgba(255,255,255,0.1);">
+                <p>姓名：<span id="res-name" style="color: var(--gold);">--</span></p>
+                <p>Discord：<span id="res-discord" style="color: var(--gold);">--</span></p>
+            </div>
+            <div style="border: 2px solid #ff4d4d; color: #ff4d4d; padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 20px;">重要！請截圖傳至Discord確認！</div>
+            <button onclick="window.open('https://discord.gg/PSjb2gTZww', '_blank')" style="background: #5865F2; border: none; padding: 15px; width: 100%; border-radius: 12px; color: #fff; font-weight: bold; cursor: pointer;">前往 Discord 頻道</button>
+        </div>
+
         <div class="social-links">
-            <a href="https://discord.gg/PSjb2gTZww" target="_blank" class="link-icon discord"><i class="fa-brands fa-discord"></i></a>
-            <a href="https://www.instagram.com/kynetic_lmports1018/" target="_blank" class="link-icon instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://discord.gg/PSjb2gTZww" target="_blank" class="link-icon" style="background:#5865F2;"><i class="fa-brands fa-discord"></i></a>
+            <a href="https://www.instagram.com/kynetic_lmports1018/" target="_blank" class="link-icon" style="background:linear-gradient(45deg, #fdf497, #fd5949, #d6249f);"><i class="fa-brands fa-instagram"></i></a>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-        window.showPage = function(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pageId + '-page').classList.add('active');
-            document.getElementById('nav-' + pageId).classList.add('active');
-        };
+        import { getDatabase, ref, onValue, runTransaction, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBUPTNtwtQxvepJpdeL349QrJSg8uWDBlk",
@@ -221,13 +218,65 @@
         };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const stockRef = ref(db, 'stock');
+        const chineseReg = /^[\u4e00-\u9fa5]{2,10}$/;
 
-        onValue(stockRef, (snapshot) => {
-            const s = snapshot.val() || 0;
-            document.getElementById('stock-count').innerText = s;
-            document.getElementById('marquee-stock').innerText = s;
+        function updateButtonState() {
+            const name = document.getElementById('user-name').value.trim();
+            const discord = document.getElementById('user-discord').value.trim();
+            const btn = document.getElementById('buy-btn');
+            const stock = parseInt(document.getElementById('stock-count').innerText) || 0;
+
+            if (localStorage.getItem('kynetic_ordered') === 'true') {
+                btn.disabled = true; btn.innerText = "您已完成預購"; return;
+            }
+            if (stock <= 0) {
+                btn.disabled = true; btn.innerText = "已完售"; return;
+            }
+            if (name !== "" && !chineseReg.test(name)) {
+                btn.disabled = true; btn.innerText = "姓名請填中文"; 
+                document.getElementById('user-name').classList.add('input-error');
+                return;
+            }
+            if (name && discord && chineseReg.test(name)) {
+                btn.disabled = false; btn.innerText = "立即參與預購";
+                document.getElementById('user-name').classList.remove('input-error');
+            } else {
+                btn.disabled = true; btn.innerText = "請輸入完整資訊";
+            }
+        }
+
+        document.getElementById('user-name').addEventListener('input', updateButtonState);
+        document.getElementById('user-discord').addEventListener('input', updateButtonState);
+
+        onValue(ref(db, 'stock'), (s) => { 
+            const val = s.val() || 0;
+            document.getElementById('stock-count').innerText = val; 
+            document.getElementById('marquee-stock').innerText = val;
+            updateButtonState(); 
         });
+
+        window.handleBuy = function() {
+            const name = document.getElementById('user-name').value.trim();
+            const discord = document.getElementById('user-discord').value.trim();
+            runTransaction(ref(db, 'stock'), (s) => (s > 0 ? s - 1 : s)).then((res) => {
+                if (res.committed) {
+                    push(ref(db, 'orders'), { name, discord, time: new Date().toLocaleString() });
+                    localStorage.setItem('kynetic_ordered', 'true');
+                    const mName = name.length <= 2 ? name[0] + "*" : name[0] + "*".repeat(name.length - 2) + name[name.length - 1];
+                    const mDiscord = discord.substring(0, 2) + "****";
+                    document.getElementById('res-name').innerText = mName;
+                    document.getElementById('res-discord').innerText = mDiscord;
+                    showPage('success');
+                }
+            });
+        };
+
+        window.showPage = function(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id + '-page')?.classList.add('active');
+            document.getElementById('nav-' + id)?.classList.add('active');
+        };
     </script>
 </body>
 </html>
