@@ -2,205 +2,231 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>商品搶購預覽</title>
-    
-    <meta property="og:title" content="商品搶購預覽">
-    <meta property="og:description" content="Kynetic Imports 限量預購網頁。請填寫真實姓名與 Discord 參與搶購，名額有限售完為止！">
-    <meta property="og:image" content="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png">
-    <meta property="og:url" content="https://az40824082-hub.github.io/Kynetic-Imports-shop/">
-    <meta property="og:type" content="website">
+    <title>Kynetic Imports - 官方物流查詢與搶購</title>
 
-    <link rel="icon" href="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?v=2" type="image/x-icon">
-    <link rel="apple-touch-icon" href="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?v=2">
+    <meta property="og:title" content="Kynetic Imports 官方物流與搶購">
+    <meta property="og:image" content="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png">
+    <link rel="icon" href="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?v=12" type="image/x-icon">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        body { font-family: sans-serif; text-align: center; background: #f4f4f4; padding: 20px; }
-        .product-card { background: white; width: 360px; margin: 20px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; }
-        
-        /* 商店 LOGO 樣式 */
-        .logo-container { width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; background: #eee; }
+        /* === 全域基礎樣式 === */
+        body { 
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; 
+            text-align: center; 
+            background: radial-gradient(circle at center, #1a1a05 0%, #000000 100%); 
+            color: #fff;
+            padding: 0; margin: 0; min-height: 100vh;
+        }
+
+        /* === 一排式膠囊導覽列 === */
+        .nav-container { padding: 20px 0; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .nav-bar { 
+            background: rgba(0, 0, 0, 0.8); 
+            padding: 8px; 
+            display: inline-flex; 
+            gap: 5px; 
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .nav-item { 
+            color: #FFD700; text-decoration: none !important; font-weight: bold; font-size: 14px; 
+            padding: 8px 25px; border-radius: 40px; cursor: pointer; user-select: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-item:hover { color: #fff; background: rgba(255, 215, 0, 0.1); }
+        .nav-item.active { 
+            background: #FFD700; color: #000; 
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        /* === 產品卡片與 3D 效果 === */
+        .product-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(8px);
+            width: 380px; margin: 30px auto; padding: 40px; 
+            border-radius: 25px; border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            animation: cardEnter 0.8s ease-out;
+            transition: transform 0.5s ease;
+        }
+        .product-card:hover { transform: perspective(1000px) rotateX(2deg) rotateY(-2deg); }
+        @keyframes cardEnter { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .logo-container { 
+            width: 100px; 
+            height: 100px; 
+            margin: 0 auto 20px; 
+            border-radius: 50%; 
+            overflow: hidden; 
+            border: 2px solid #FFD700;
+            /* 這裡增加強發光感 */
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), inset 0 0 10px rgba(255, 215, 0, 0.5);
+            transition: 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .logo-container:hover { transform: rotate(360deg) scale(1.1); }
         .logo-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        .stock { font-size: 26px; color: #ff4d4d; font-weight: bold; margin: 15px 0; }
-        
-        /* 跑馬燈樣式 */
-        .marquee-container { background: #fff3f3; color: #ff4d4d; padding: 8px 0; overflow: hidden; position: relative; margin: 10px 0; border: 1px solid #ffcccc; border-radius: 8px; }
-        .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 12s linear infinite; }
+        /* === 分頁切換動畫 === */
+        .page { display: none; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        /* === 跑馬燈 === */
+        .marquee-container { 
+            background: rgba(255, 215, 0, 0.05); color: #FFD700; 
+            padding: 10px 0; overflow: hidden; margin: 20px 0; 
+            border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 12px; font-size: 13px;
+        }
+        .marquee-content { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .marquee-content span { margin-right: 50px; font-weight: bold; }
 
-        .input-group { text-align: left; margin-top: 20px; }
-        .input-group label { display:block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        .input-group input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        .input-group input:disabled { background-color: #f9f9f9; cursor: not-allowed; }
+        /* === 搶購按鈕與流光 === */
+        #buy-btn { 
+            background: linear-gradient(45deg, #FFD700, #FFA500); 
+            color: #000; border: none; padding: 18px; width: 100%; 
+            border-radius: 12px; font-size: 18px; font-weight: bold; 
+            cursor: pointer; position: relative; overflow: hidden;
+        }
+        #buy-btn::after {
+            content: ""; position: absolute; top: -50%; left: -60%; width: 20%; height: 200%;
+            background: rgba(255, 255, 255, 0.4); transform: rotate(30deg); animation: shiny 3s infinite;
+        }
+        @keyframes shiny { 0% { left: -60%; } 20% { left: 120%; } 100% { left: 120%; } }
+        #buy-btn:disabled { background: #444 !important; color: #888; cursor: not-allowed; }
+        #buy-btn:disabled::after { display: none; }
+
+        /* === 物流進度條樣式 === */
+        .progress-list { background: rgba(0, 0, 0, 0.4); border-radius: 20px; padding: 20px 15px; text-align: left; }
+        .progress-step { display: flex; margin-bottom: 25px; position: relative; }
+        .progress-step:not(:last-child)::after {
+            content: ""; position: absolute; left: 17px; top: 35px; width: 2px; height: 25px; background: rgba(255, 215, 0, 0.1);
+        }
+        .icon-box {
+            width: 36px; height: 36px; background: rgba(255, 215, 0, 0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .icon-box i { color: #FFD700; font-size: 16px; display: block !important; }
         
-        #buy-btn { background: #007bff; color: white; border: none; padding: 15px; cursor: pointer; border-radius: 8px; font-size: 18px; width: 100%; font-weight: bold; transition: 0.3s; }
-        #buy-btn:disabled { background: #ccc !important; cursor: not-allowed; }
+        /* 正在進行中的步驟發光 */
+        .active-step .icon-box { background: #FFD700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); border: none; }
+        .active-step .icon-box i { color: #000; }
+        
+        .step-text strong { display: block; font-size: 15px; color: #FFD700; margin-bottom: 2px; }
+        .step-time { display: block; font-size: 11px; color: #666; margin-bottom: 5px; }
+        .step-text p { margin: 0; font-size: 12px; color: #aaa; line-height: 1.4; }
 
-        .social-links { margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee; }
-        .link-icon { display: inline-flex; align-items: center; justify-content: center; margin: 0 15px; width: 70px; height: 70px; border-radius: 50%; color: white !important; text-decoration: none; font-size: 32px; transition: all 0.3s ease; border: 4px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .discord { background-color: #5865F2 !important; border-color: #5865F2 !important; }
-        .instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important; border-color: #d6249f !important; }
+        /* === 社群連結 === */
+        .social-links { margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
+        .link-icon { 
+            width: 50px; height: 50px; border-radius: 50%; color: #fff !important; 
+            font-size: 24px; display: flex; align-items: center; justify-content: center; 
+            transition: 0.4s; border: 1px solid rgba(255,255,255,0.2); text-decoration: none !important;
+        }
+        .link-icon:hover { transform: translateY(-8px) rotate(10deg); border-color: #FFD700; box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2); }
+        .discord { background: #5865F2; }
+        .instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
 
-        #success-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; width: 320px; text-align: center; }
-        .big-alert-text { font-size: 24px; color: #ff4d4d; font-weight: bold; margin: 20px 0; background: #fff3f3; padding: 15px 5px; border: 2px solid #ff4d4d; border-radius: 10px; white-space: nowrap; }
+        /* 輸入框樣式 */
+        .input-group input { 
+            width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.05); 
+            border: 1px solid #333; border-radius: 10px; color: #fff; box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
 
-    <div class="product-card">
-        <div class="logo-container">
-            <img src="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?ex=695186b1&is=69503531&hm=8826e06af1254e458f62524b3e10bdaf2f5f11bdc66c9f930e74d04452663357&=&format=webp&quality=lossless" alt="Shop Logo">
-        </div>
-
-        <h2 style="margin: 0;">商品搶購預覽</h2>
-        <p style="color: #666;">限量搶購網頁</p>
-        
-        <div class="stock">剩餘名額：<span id="stock-count">載入中...</span></div>
-
-        <div class="marquee-container">
-            <div class="marquee-content">
-                <span>🔥 目前剩餘名額：<span id="marquee-stock">載入中...</span></span>
-                <span>📢 搶購名額有限，請填寫中文真實姓名！</span>
-                <span>⚠️ 成功後請截圖畫面傳至 Discord 頻道。</span>
-            </div>
-        </div>
-        
-        <div class="input-group">
-            <label>真實姓名</label>
-            <input type="text" id="user-name" placeholder="請填寫中文姓名" disabled>
-            <label>Discord 使用者名稱</label>
-            <input type="text" id="user-discord" placeholder="例如: aa544655" disabled>
-        </div>
-
-        <button id="buy-btn" onclick="order()" disabled>載入中...</button>
-
-        <div class="social-links">
-            <p style="font-size: 14px; color: #888; margin-bottom: 15px;">聯絡小編</p>
-            <a href="https://discord.gg/PSjb2gTZww" target="_blank" class="link-icon discord">
-                <i class="fa-brands fa-discord"></i>
-            </a>
-            <a href="https://www.instagram.com/kynetic_lmports1018/" target="_blank" class="link-icon instagram">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-        </div>
+    <div class="nav-container">
+        <nav class="nav-bar">
+            <div id="nav-home" class="nav-item active" onclick="showPage('home')">首頁搶購</div>
+            <div id="nav-status" class="nav-item" onclick="showPage('status')">貨物查詢</div>
+        </nav>
     </div>
 
-    <div id="success-modal">
-        <div class="modal-content">
-            <h2 style="color: #28a745; margin-top: 0;">🎉 預購成功！</h2>
-            <p style="text-align: left; font-size: 18px; color: #444;">
-                姓名：<span id="display-name"></span><br>
-                Discord：<span id="display-discord"></span>
-            </p>
+    <div class="product-card">
+        <div class="logo-container">
+            <img src="https://media.discordapp.net/attachments/1135627305763479563/1454558528797802516/LOGO1.png?ex=695380f1&is=69522f71&hm=e21544bd55e4bf10e3b345f752095ea6305e7344f6efce6720c919b892059ab0&=&format=webp&quality=lossless" alt="Logo">
+        </div>
+
+        <div id="home-page" class="page active">
+            <h2 style="margin:0; color: #FFD700; letter-spacing:1px;">AOC K68 PRO</h2>
+            <div style="font-size:24px; color:#FFD700; font-weight:bold; margin:10px 0;">
+                <span id="stock-count">--</span> <small style="font-size:12px; color:#666;">名額</small>
+            </div>
             
-            <div class="big-alert-text">
-                請把我截圖起來傳至Discord！
+            <div class="marquee-container">
+                <div class="marquee-content">
+                    <span>⚡ 剩餘名額：<span id="marquee-stock">--</span> ⚡ 搶購後請截圖傳至 Discord ⚡ 姓名請填寫中文真實姓名 ⚡</span>
+                </div>
             </div>
 
-            <button onclick="goToDiscord()" style="background: #5865F2; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;">
-                前往 Discord 頻道
-            </button>
+            <div class="input-group">
+                <input type="text" id="user-name" placeholder="預覽模式暫不開放" disabled>
+                <input type="text" id="user-discord" placeholder="預覽模式暫不開放" disabled>
+            </div>
+            <button id="buy-btn" disabled>預覽模式 (尚未開放)</button>
+        </div>
+
+        <div id="status-page" class="page">
+            <h2 style="margin-bottom:10px; color: #FFD700;">最新一批貨物狀態</h2>
+            <p style="font-size: 12px; color: #666; margin-bottom: 20px;">資料來源：集運物流中心</p>
+            
+            <div class="progress-list">
+                <div class="progress-step active-step">
+                    <div class="icon-box"><i class="fas fa-plane-departure"></i></div>
+                    <div class="step-text">
+                        <strong>包裹已從倉庫出貨</strong>
+                        <span class="step-time">2025-12-29 19:04:01</span>
+                        <p>包裹已離開集運倉，請耐心等候航次開航。</p>
+                    </div>
+                </div>
+                <div class="progress-step">
+                    <div class="icon-box"><i class="fas fa-box"></i></div>
+                    <div class="step-text">
+                        <strong>倉庫撿貨打包完畢</strong>
+                        <span class="step-time">2025-12-27 14:43:38</span>
+                        <p>商品已裝箱完成，等待移交物流商。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://discord.gg/PSjb2gTZww" target="_blank" class="link-icon discord"><i class="fa-brands fa-discord"></i></a>
+            <a href="https://www.instagram.com/kynetic_lmports1018/" target="_blank" class="link-icon instagram"><i class="fa-brands fa-instagram"></i></a>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, runTransaction, set, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        window.showPage = function(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageId + '-page').classList.add('active');
+            document.getElementById('nav-' + pageId).classList.add('active');
+        };
 
         const firebaseConfig = {
             apiKey: "AIzaSyBUPTNtwtQxvepJpdeL349QrJSg8uWDBlk",
             authDomain: "test-89795.firebaseapp.com",
             databaseURL: "https://test-89795-default-rtdb.asia-southeast1.firebasedatabase.app/", 
             projectId: "test-89795",
-            storageBucket: "test-89795.firebasestorage.app",
-            messagingSenderId: "377974208078",
             appId: "1:377974208078:web:d283338995abe17017751f"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const stockRef = ref(db, 'stock');
 
-        const stockDisplay = document.getElementById('stock-count');
-        const marqueeStock = document.getElementById('marquee-stock');
-        const buyBtn = document.getElementById('buy-btn');
-        const nameInput = document.getElementById('user-name');
-        const discordInput = document.getElementById('user-discord');
-
-        // --- 設定開搶時間 (2025年, 12月28日, 04點51分) ---
-        // 注意：月份 11 代表 12 月
-        const startTime = new Date(2025, 11, 28, 4, 51, 0).getTime();
-
-        //到時候要開放改這邊 
-
-        function checkInputs() {             
-            // 強制鎖定所有欄位
-            nameInput.disabled = true;
-            discordInput.disabled = true;
-            
-            // 強制設定按鈕狀態
-            buyBtn.disabled = true;
-            buyBtn.innerText = "預覽模式 (尚未開放)";
-            
-            // 讓輸入框變灰色
-            nameInput.style.backgroundColor = "#eee";
-            discordInput.style.backgroundColor = "#eee";
-        }
-
-        setInterval(() => {
-            const now = new Date().getTime();
-            if (now < startTime) {
-                const diff = startTime - now;
-                const h = Math.floor(diff / (1000 * 60 * 60));
-                const m = Math.floor((diff / (1000 * 60)) % 60);
-                const s = Math.floor((diff / 1000) % 60);
-                buyBtn.innerText = `預購倒數 ${h}時${m}分${s}秒`;
-                buyBtn.disabled = true;
-            } else {
-                checkInputs();
-            }
-        }, 1000);
-
-        nameInput.addEventListener('input', checkInputs);
-        discordInput.addEventListener('input', checkInputs);
-
         onValue(stockRef, (snapshot) => {
-            const currentStock = snapshot.val();
-            const finalStock = (currentStock !== null) ? currentStock : 0;
-            stockDisplay.innerText = finalStock;
-            if (marqueeStock) marqueeStock.innerText = finalStock; // 同步跑馬燈
-            checkInputs();
+            const s = snapshot.val() || 0;
+            document.getElementById('stock-count').innerText = s;
+            document.getElementById('marquee-stock').innerText = s;
         });
-
-        window.order = function() {
-            const name = nameInput.value.trim();
-            const discord = discordInput.value.trim();
-            runTransaction(stockRef, (currentData) => {
-                if (currentData > 0) return currentData - 1;
-                return;
-            }).then((result) => {
-                if (result.committed) {
-                    localStorage.setItem('hasOrderedK69', 'true');
-                    const orderRef = push(ref(db, 'orders'));
-                    set(orderRef, { name, discord, time: new Date().toLocaleString() });
-
-                    let maskedName = name[0] + "*".repeat(Math.max(1, name.length - 1));
-                    let maskedDiscord = discord.substring(0, 2) + "****";
-
-                    document.getElementById('display-name').innerText = maskedName;
-                    document.getElementById('display-discord').innerText = maskedDiscord;
-                    document.getElementById('success-modal').style.display = 'flex';
-                }
-            });
-        };
-
-        window.goToDiscord = function() {
-            window.location.href = "https://discord.com/channels/1428075403125325969/1452541781358022807";
-        };
     </script>
 </body>
 </html>
