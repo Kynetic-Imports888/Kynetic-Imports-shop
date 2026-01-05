@@ -144,7 +144,6 @@
             0%, 100% { opacity: 1; } 50% { opacity: 0.6; }
         }
 
-        /* 其他原本的 CSS 保持不變... */
         .page { display: none; }
         .page.active { display: block; animation: pageSlideIn 0.5s ease; }
         @keyframes pageSlideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
@@ -152,6 +151,34 @@
         .marquee-container { background: rgba(255, 215, 0, 0.08); color: var(--gold); padding: 12px 0; overflow: hidden; margin: 15px 0; border-radius: 12px; font-size: 13px; white-space: nowrap; }
         .marquee-content { display: inline-block; padding-left: 100%; animation: marquee-move 18s linear infinite; }
         @keyframes marquee-move { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* === 🕒 倒數計時器樣式 === */
+        #countdown-timer {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.9), rgba(10, 10, 10, 0.95));
+            border: 2px solid var(--gold);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+            animation: timerGlow 2s infinite alternate;
+        }
+
+        @keyframes timerGlow {
+            from { box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); border-color: var(--dark-gold); }
+            to { box-shadow: 0 0 25px rgba(255, 215, 0, 0.5); border-color: var(--gold); }
+        }
+
+        #timer-display {
+            display: block;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 26px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
 
         .status-card { background: var(--bg-dark); border-radius: 20px; padding: 25px; margin-top: 15px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: left; }
         .timeline { position: relative; padding-left: 40px; }
@@ -168,8 +195,9 @@
         #buy-btn { background: linear-gradient(45deg, var(--gold), var(--dark-gold)); color: #000; border: none; padding: 16px; width: 100%; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         #buy-btn:disabled { background: #444 !important; color: #888 !important; cursor: not-allowed; }
 
+        /* === ⚡ 社群按鈕樣式修正 ⚡ === */
         .social-links { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
-        .link-icon { width: 45px; height: 45px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .link-icon { width: 45px; height: 45px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); text-decoration: none;}
         .link-icon:hover { transform: translateY(-5px); border-color: var(--gold); }
     </style>
 </head>
@@ -192,18 +220,10 @@
         </div>
 
         <div class="slideshow-container">
-            <div class="mySlides fade">
-                <img src="bu01.png">
-            </div>
-            <div class="mySlides fade">
-                <img src="bu02.png">
-            </div>
-            <div class="mySlides fade">
-                <img src="bu03.png">
-            </div>
-            <div class="mySlides fade">
-                <img src="bu04.png">
-            </div>
+            <div class="mySlides fade"><img src="bu01.png"></div>
+            <div class="mySlides fade"><img src="bu02.png"></div>
+            <div class="mySlides fade"><img src="bu03.png"></div>
+            <div class="mySlides fade"><img src="bu04.png"></div>
             <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
             <a class="next" onclick="plusSlides(1)">&#10095;</a>
         </div>
@@ -227,15 +247,18 @@
                 </div>
             </div>
 
+            <div id="countdown-timer">
+                <div style="font-size: 18px; color: var(--gold); letter-spacing: 2px;">💥 距離預購開始還有 💥</div>
+                <p style="color: #636363; font-size: 12px; margin: 5px 0 0 0;">（如擔心時間到無法正常填選請重新整理該網頁）</p>
+                <span id="timer-display">載入中...</span>
+            </div>
+
             <div class="input-group">
-    <input type="text" id="user-name" placeholder="請輸入中文真實姓名(01/06 14:00 開始)" disabled>
-    <input type="text" id="user-discord" placeholder="請輸入 Discord 名稱(01/06 14:00 開始)" disabled>
-</div>
+                <input type="text" id="user-name" placeholder="請輸入中文真實姓名(尚未開始)" disabled>
+                <input type="text" id="user-discord" placeholder="請輸入 Discord 名稱(尚未開始)" disabled>
+            </div>
             <button id="buy-btn" onclick="handleBuy()" disabled>請輸入完整資訊</button>
         </div>
-        <div id="countdown-timer" style="background: rgba(255, 215, 0, 0.1); border: 1px dashed var(--gold); padding: 15px; border-radius: 12px; margin-bottom: 15px; color: var(--gold); font-weight: bold; font-size: 18px; text-align: center;">
-    距離預購開始還有：<span id="timer-display">計算中...</span>
-</div>
 
         <div id="status-page" class="page">
     <div style="color: #666; font-size: 12px; margin-bottom: 10px;">資料來源：集運物流中心</div>
@@ -319,11 +342,6 @@
             </div>
         </div>
     </div>
-</div>
-</div>
-</div>
-    </div>
-        </div>
 
         <div id="success-page" class="page">
             <h2 style="color: #4CAF50;"><i class="fas fa-check-circle"></i> 預購完成！</h2>
@@ -338,9 +356,8 @@
             <a href="https://discord.gg/PSjb2gTZww" target="_blank" class="link-icon" style="background:#5865F2;"><i class="fa-brands fa-discord"></i></a>
             <a href="https://www.instagram.com/kynetic_lmports1018/" target="_blank" class="link-icon" style="background:linear-gradient(45deg, #fdf497, #fd5949, #d6249f);"><i class="fa-brands fa-instagram"></i></a>
         </div>
-    </div>
 
-    <script type="module">
+    </div> <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue, runTransaction, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -359,12 +376,13 @@
             const name = document.getElementById('user-name').value.trim();
             const discord = document.getElementById('user-discord').value.trim();
             const btn = document.getElementById('buy-btn');
-            const stock = parseInt(document.getElementById('stock-count').innerText) || 0;
+            const stockElement = document.getElementById('stock-count');
+            const stock = stockElement ? (parseInt(stockElement.innerText) || 0) : 0;
 
             if (localStorage.getItem('kynetic_ordered') === 'true') {
                 btn.disabled = true; btn.innerText = "您已完成預購"; return;
             }
-            if (stock <= 0) {
+            if (stock <= 0 && stockElement && stockElement.innerText !== "--") {
                 btn.disabled = true; btn.innerText = "已完售"; return;
             }
             if (name && discord && chineseReg.test(name)) {
@@ -375,51 +393,53 @@
         }
 
         function checkPreorderTime() {
-    const now = new Date().getTime();
-    const targetTime = new Date(2026, 0, 6, 14, 0, 0).getTime(); // 2026/01/06 14:00
-    const distance = targetTime - now;
+            const now = new Date().getTime();
+            const targetTime = new Date(2026, 0, 6, 14, 0, 0).getTime(); 
+            const distance = targetTime - now;
 
-    const nameInput = document.getElementById('user-name');
-    const discordInput = document.getElementById('user-discord');
-    const timerBox = document.getElementById('countdown-timer');
-    const timerDisplay = document.getElementById('timer-display');
+            const nameInput = document.getElementById('user-name');
+            const discordInput = document.getElementById('user-discord');
+            const timerBox = document.getElementById('countdown-timer');
+            const timerDisplay = document.getElementById('timer-display');
 
-    if (distance > 0) {
-        // 尚未開始：計算倒數時間
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        timerDisplay.innerHTML = `${days}天 ${hours}時 ${minutes}分 ${seconds}秒`;
-        
-        // 確保輸入框是鎖定的
-        nameInput.disabled = true;
-        discordInput.disabled = true;
-    } else {
-        // 時間到了：隱藏倒數器，打開輸入框
-        if (timerBox) timerBox.style.display = "none"; 
-        
-        if (nameInput.disabled) { // 只在切換那一刻執行
-            nameInput.disabled = false;
-            nameInput.placeholder = "請輸入中文真實姓名";
-            discordInput.disabled = false;
-            discordInput.placeholder = "請輸入 Discord 名稱";
-            updateButtonState(); // 更新按鈕顏色
+                const d = String(days).padStart(2, '0');
+                const h = String(hours).padStart(2, '0');
+                const m = String(minutes).padStart(2, '0');
+                const s = String(seconds).padStart(2, '0');
+
+                timerDisplay.innerHTML = `${d}天 ${h}時 ${m}分 ${s}秒`;
+                nameInput.disabled = true;
+                discordInput.disabled = true;
+            } else {
+                if (timerBox) timerBox.style.display = "none"; 
+                if (nameInput.disabled) {
+                    nameInput.disabled = false;
+                    nameInput.placeholder = "請輸入中文真實姓名";
+                    discordInput.disabled = false;
+                    discordInput.placeholder = "請輸入 Discord 名稱";
+                    updateButtonState();
+                }
+            }
         }
-    }
-}
 
-// 啟動定時器
-setInterval(checkPreorderTime, 1000);
+        setInterval(checkPreorderTime, 1000);
+        checkPreorderTime();
 
         document.getElementById('user-name').addEventListener('input', updateButtonState);
         document.getElementById('user-discord').addEventListener('input', updateButtonState);
 
         onValue(ref(db, 'stock'), (s) => { 
             const val = s.val() || 0;
-            document.getElementById('stock-count').innerText = val; 
-            document.getElementById('marquee-stock').innerText = val;
+            const sc = document.getElementById('stock-count');
+            const ms = document.getElementById('marquee-stock');
+            if(sc) sc.innerText = val; 
+            if(ms) ms.innerText = val;
             updateButtonState(); 
         });
 
@@ -440,22 +460,22 @@ setInterval(checkPreorderTime, 1000);
         window.showPage = function(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id + '-page')?.classList.add('active');
-            document.getElementById('nav-' + id)?.classList.add('active');
+            const targetPage = document.getElementById(id + '-page');
+            const targetNav = document.getElementById('nav-' + id);
+            if(targetPage) targetPage.classList.add('active');
+            if(targetNav) targetNav.classList.add('active');
         };
 
         let slideIndex = 1;
         window.plusSlides = function(n) { showSlides(slideIndex += n); }
         window.currentSlide = function(n) { showSlides(slideIndex = n); }
-
         function showSlides(n) {
-            let i;
             let slides = document.getElementsByClassName("mySlides");
             let dots = document.getElementsByClassName("dot");
-            if (n > slides.length) {slideIndex = 1}    
-            if (n < 1) {slideIndex = slides.length}
-            for (i = 0; i < slides.length; i++) { slides[i].style.display = "none"; }
-            for (i = 0; i < dots.length; i++) { dots[i].className = dots[i].className.replace(" active", ""); }
+            if (n > slides.length) slideIndex = 1;
+            if (n < 1) slideIndex = slides.length;
+            for (let i = 0; i < slides.length; i++) slides[i].style.display = "none";
+            for (let i = 0; i < dots.length; i++) dots[i].className = dots[i].className.replace(" active", "");
             if(slides[slideIndex-1]) slides[slideIndex-1].style.display = "block";  
             if(dots[slideIndex-1]) dots[slideIndex-1].className += " active";
         }
