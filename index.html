@@ -220,7 +220,7 @@
         </div>
 
         <div id="home-page" class="page active">
-            <h2 style="margin:0; color: var(--gold); font-size: 24px;">測試商品</h2>
+            <h2 style="margin:0; color: var(--gold); font-size: 24px;">ATK 緋紅 二次元玻璃滑鼠墊FPS專用</h2>
             <div style="font-size:26px; color:var(--gold); font-weight:bold; margin:10px 0;">
                 <span id="stock-count">--</span> <small style="font-size:12px; color:#666;">名額</small>
             </div>
@@ -232,11 +232,14 @@
             </div>
 
             <div class="input-group">
-                <input type="text" id="user-name" placeholder="預覽模式：暫不開放填寫" disabled>
-                <input type="text" id="user-discord" placeholder="預覽模式：暫不開放填寫" disabled>
-            </div>
+    <input type="text" id="user-name" placeholder="請輸入中文真實姓名(01/06 14:00 開始)" disabled>
+    <input type="text" id="user-discord" placeholder="請輸入 Discord 名稱(01/06 14:00 開始)" disabled>
+</div>
             <button id="buy-btn" onclick="handleBuy()" disabled>請輸入完整資訊</button>
         </div>
+        <div id="countdown-timer" style="background: rgba(255, 215, 0, 0.1); border: 1px dashed var(--gold); padding: 15px; border-radius: 12px; margin-bottom: 15px; color: var(--gold); font-weight: bold; font-size: 18px; text-align: center;">
+    距離預購開始還有：<span id="timer-display">計算中...</span>
+</div>
 
         <div id="status-page" class="page">
     <div style="color: #666; font-size: 12px; margin-bottom: 10px;">資料來源：集運物流中心</div>
@@ -374,6 +377,45 @@
                 btn.disabled = true; btn.innerText = "請填寫正確資訊";
             }
         }
+
+        function checkPreorderTime() {
+    const now = new Date().getTime();
+    const targetTime = new Date(2026, 0, 6, 14, 0, 0).getTime(); // 2026/01/06 14:00
+    const distance = targetTime - now;
+
+    const nameInput = document.getElementById('user-name');
+    const discordInput = document.getElementById('user-discord');
+    const timerBox = document.getElementById('countdown-timer');
+    const timerDisplay = document.getElementById('timer-display');
+
+    if (distance > 0) {
+        // 尚未開始：計算倒數時間
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        timerDisplay.innerHTML = `${days}天 ${hours}時 ${minutes}分 ${seconds}秒`;
+        
+        // 確保輸入框是鎖定的
+        nameInput.disabled = true;
+        discordInput.disabled = true;
+    } else {
+        // 時間到了：隱藏倒數器，打開輸入框
+        if (timerBox) timerBox.style.display = "none"; 
+        
+        if (nameInput.disabled) { // 只在切換那一刻執行
+            nameInput.disabled = false;
+            nameInput.placeholder = "請輸入中文真實姓名";
+            discordInput.disabled = false;
+            discordInput.placeholder = "請輸入 Discord 名稱";
+            updateButtonState(); // 更新按鈕顏色
+        }
+    }
+}
+
+// 啟動定時器
+setInterval(checkPreorderTime, 1000);
 
         document.getElementById('user-name').addEventListener('input', updateButtonState);
         document.getElementById('user-discord').addEventListener('input', updateButtonState);
