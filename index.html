@@ -260,49 +260,59 @@
             <button id="buy-btn" onclick="handleBuy()" disabled>請輸入完整資訊</button>
         </div>
 
-         <div id="status-page" class="page">
-    <div style="color: #666; font-size: 12px; margin-bottom: 10px;">資料來源：集運物流中心</div>
-    <div class="status-card">
-        <div class="timeline">
+         <div class="timeline">
 
-            <div class="timeline-item">
-                <div class="t-icon"><i class="fas fa-shipping-fast"></i></div>
-                <div class="t-content">
-                    <h4 style="color: #2196F3; font-weight: bold;">包裹已出貨</h4>
-                    <span class="t-time">2026-01-26 15:49:54</span>
-                    <div style="background: rgba(33, 150, 243, 0.1); border: 1px solid rgba(33, 150, 243, 0.3); padding: 10px; border-radius: 8px; color: #eee; margin-top: 8px; font-size: 14px;">
-                        <i class="fas fa-truck-loading" style="color: #2196F3; margin-right: 5px;"></i>
-                        包裹已從倉庫出貨，請耐心等候航次開航。
-                    </div>
-                </div>
+    <div class="timeline-item current">
+        <div class="t-icon"><i class="fas fa-ship"></i></div>
+        <div class="t-content">
+            <h4 style="color: #FFD700; font-weight: bold;">船隻已開航</h4>
+            <span class="t-time">2026-01-27 10:41:00</span>
+            <div style="background: rgba(255, 215, 0, 0.1); border: 2px solid rgba(255, 215, 0, 0.4); padding: 12px; border-radius: 10px; color: #fff; margin-top: 8px; font-size: 14px; line-height: 1.6;">
+                <i class="fas fa-bullhorn" style="color: #FFD700; margin-right: 5px;"></i>
+                船隻已開航，預計四小時抵達目的港。<br>
+                <hr style="border: 0; border-top: 1px solid rgba(255,215,0,0.2); margin: 8px 0;">
+                <span style="color: #FFD700; font-weight: bold;">⚠️ 重要提醒：</span><br>
+                請務必主動留意 <strong style="text-decoration: underline;">易利委 (EZ WAY)</strong> 通關通知，並點選「申報相符」，我們才能順利進行通關作業，感謝配合。
             </div>
-
-            <div class="timeline-item">
-                <div class="t-icon"><i class="fas fa-warehouse"></i></div>
-                <div class="t-content">
-                    <h4 style="color: #FF9800; font-weight: bold;">等待撿貨</h4>
-                    <span class="t-time">2026-01-13 20:16:03</span>
-                    <div style="background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3); padding: 10px; border-radius: 8px; color: #eee; margin-top: 8px; font-size: 14px;">
-                        <i class="fas fa-receipt" style="color: #FF9800; margin-right: 5px;"></i>
-                        等待倉庫撿貨中。
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item">
-                <div class="t-icon"><i class="fas fa-box"></i></div>
-                <div class="t-content">
-                    <h4 style="color: #4CAF50; font-weight: bold;">訂單處理中</h4>
-                    <span class="t-time">2026-01-13 15:34:03</span>
-                    <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3); padding: 10px; border-radius: 8px; color: #eee; margin-top: 8px; font-size: 14px;">
-                        <i class="fas fa-check-circle" style="color: #4CAF50; margin-right: 5px;"></i>
-                        商品已提交集運物流中心處理中。
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
+
+    <div class="timeline-item">
+        <div class="t-icon"><i class="fas fa-shipping-fast"></i></div>
+        <div class="t-content">
+            <h4 style="color: #2196F3; font-weight: bold;">包裹已出貨</h4>
+            <span class="t-time">2026-01-26 15:49:54</span>
+            <div style="background: rgba(33, 150, 243, 0.1); border: 1px solid rgba(33, 150, 243, 0.3); padding: 10px; border-radius: 8px; color: #eee; margin-top: 8px; font-size: 14px;">
+                <i class="fas fa-truck-loading" style="color: #2196F3; margin-right: 5px;"></i>
+                包裹已從倉庫出貨，請耐心等候航次開航。
+            </div>
+        </div>
+    </div>
+
+    <div class="timeline-item">
+        <div class="t-icon"><i class="fas fa-warehouse"></i></div>
+        <div class="t-content">
+            <h4 style="color: #FF9800; font-weight: bold;">等待撿貨</h4>
+            <span class="t-time">2026-01-13 20:16:03</span>
+            <div style="background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3); padding: 10px; border-radius: 8px; color: #eee; margin-top: 8px; font-size: 14px;">
+                <i class="fas fa-receipt" style="color: #FF9800; margin-right: 5px;"></i>
+                等待倉庫撿貨中。
+            </div>
+        </div>
+    </div>
+
+    <div class="timeline-item">
+        <div class="t-icon"><i class="fas fa-box"></i></div>
+        <div class="t-content">
+            <h4 style="color: #4CAF50; font-weight: bold;">訂單處理中</h4>
+            <span class="t-time">2026-01-13 15:34:03</span>
+            <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3); padding: 10px; border-radius: 8px; color: #eee; margin-top: 8px; font-size: 14px;">
+                <i class="fas fa-check-circle" style="color: #4CAF50; margin-right: 5px;"></i>
+                商品已提交集運物流中心處理中。
+            </div>
+        </div>
+    </div>
+
 </div>
 
         <div id="success-page" class="page">
